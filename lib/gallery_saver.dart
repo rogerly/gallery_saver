@@ -20,7 +20,7 @@ class GallerySaver {
   ///saves video from provided temp path and optional album name in gallery
   static Future<bool?> saveVideo(
     String path, {
-    String? imageName,
+    String? videoName,
     String? albumName,
     bool toDcim = false,
     Map<String, String>? headers,
@@ -34,7 +34,7 @@ class GallerySaver {
     }
     if (!isLocalFilePath(path)) {
       tempFile =
-          await _downloadFile(path, imageName: imageName, headers: headers);
+          await _downloadFile(path, fileName: videoName, headers: headers);
       path = tempFile.path;
     }
     bool? result = await _channel.invokeMethod(
@@ -64,7 +64,7 @@ class GallerySaver {
     }
     if (!isLocalFilePath(path)) {
       tempFile =
-          await _downloadFile(path, imageName: imageName, headers: headers);
+          await _downloadFile(path, fileName: imageName, headers: headers);
       path = tempFile.path;
     }
 
@@ -81,7 +81,7 @@ class GallerySaver {
 
   static Future<File> _downloadFile(
     String url, {
-    String? imageName,
+    String? fileName,
     Map<String, String>? headers,
   }) async {
     print(url);
@@ -93,8 +93,8 @@ class GallerySaver {
     }
     var bytes = req.bodyBytes;
     String dir = (await getTemporaryDirectory()).path;
-    String fileName = imageName ?? '$dir/${basename(url)}';
-    File file = new File(fileName);
+    String saveFileName = fileName ?? '${basename(url)}';
+    File file = new File('$dir/$saveFileName');
     await file.writeAsBytes(bytes);
     print('File size:${await file.length()}');
     print(file.path);
